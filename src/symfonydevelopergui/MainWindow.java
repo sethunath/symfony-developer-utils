@@ -74,6 +74,11 @@ public class MainWindow extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         pullBeforeDumping = new javax.swing.JCheckBox();
         pushAfterDumping = new javax.swing.JCheckBox();
+        jButton3 = new javax.swing.JButton();
+        debugRouteButton = new javax.swing.JButton();
+        debugServiceButton = new javax.swing.JButton();
+        debugRouteText = new javax.swing.JTextField();
+        debugServiceText = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -122,35 +127,70 @@ public class MainWindow extends javax.swing.JFrame {
 
         pushAfterDumping.setText("FTP Push After dumping");
 
+        jButton3.setText("clear");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        debugRouteButton.setText("Debug route");
+        debugRouteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                debugRouteButtonActionPerformed(evt);
+            }
+        });
+
+        debugServiceButton.setText("Debug Service");
+        debugServiceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                debugServiceButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(StatusTextLabel)
-                .addGap(143, 143, 143))
             .addGroup(layout.createSequentialGroup()
                 .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(DevCacheCheckbox)
-                        .addGap(18, 18, 18)
-                        .addComponent(prodCacheCheckbox))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(debugRouteText)
+                                .addGap(18, 18, 18)
+                                .addComponent(debugRouteButton))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(StatusTextLabel))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(debugServiceText)
+                                .addGap(10, 10, 10)
+                                .addComponent(debugServiceButton)))
+                        .addGap(60, 60, 60)
+                        .addComponent(jButton3))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(spotscloudPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pullBeforeDumping)
-                        .addGap(18, 18, 18)
-                        .addComponent(pushAfterDumping)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addGap(18, 18, 18)
+                                .addComponent(DevCacheCheckbox)
+                                .addGap(18, 18, 18)
+                                .addComponent(prodCacheCheckbox))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(spotscloudPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(pullBeforeDumping)
+                                .addGap(18, 18, 18)
+                                .addComponent(pushAfterDumping)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,8 +209,18 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(jButton2)
                     .addComponent(pullBeforeDumping)
                     .addComponent(pushAfterDumping))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
-                .addComponent(StatusTextLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(debugRouteButton)
+                    .addComponent(debugRouteText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(debugServiceButton)
+                    .addComponent(debugServiceText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(StatusTextLabel)
+                    .addComponent(jButton3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
@@ -209,6 +259,37 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }).start();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        this.outPutTextPane.setText("");
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void debugRouteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_debugRouteButtonActionPerformed
+        // TODO add your handling code here:
+        String command = "php app/console router:debug ";
+        String route = this.debugRouteText.getText();
+        final String exCommand =  command+route;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MainWindow.commands.executeCommand(exCommand);
+            }
+        }).start();
+    }//GEN-LAST:event_debugRouteButtonActionPerformed
+
+    private void debugServiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_debugServiceButtonActionPerformed
+        // TODO add your handling code here:
+        String command = "php app/console container:debug ";
+        String route = this.debugServiceText.getText();
+        final String exCommand =  command+route;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MainWindow.commands.executeCommand(exCommand);
+            }
+        }).start();
+    }//GEN-LAST:event_debugServiceButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -250,8 +331,13 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JCheckBox DevCacheCheckbox;
     private javax.swing.JLabel StatusTextLabel;
+    private javax.swing.JButton debugRouteButton;
+    private javax.swing.JTextField debugRouteText;
+    private javax.swing.JButton debugServiceButton;
+    private javax.swing.JTextField debugServiceText;
     private static javax.swing.JButton jButton1;
     private static javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextPane outPutTextPane;
