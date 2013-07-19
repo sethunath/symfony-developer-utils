@@ -4,6 +4,11 @@
  */
 package symfonydevelopergui;
 
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,6 +57,17 @@ public class MainWindow extends javax.swing.JFrame {
                 System.out.println("Text changed");
             }
         });
+        Image img =Toolkit.getDefaultToolkit().getImage("Letter-S-icon.png");
+        MainWindow.trayIcon = new TrayIcon(img);
+        if(SystemTray.isSupported()){
+            MainWindow.systemTray = SystemTray.getSystemTray();
+            try {
+                MainWindow.systemTray.add(trayIcon);
+                
+            } catch (AWTException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /**
@@ -78,7 +94,7 @@ public class MainWindow extends javax.swing.JFrame {
         debugRouteButton = new javax.swing.JButton();
         debugServiceButton = new javax.swing.JButton();
         debugRouteText = new javax.swing.JTextField();
-        debugServiceText = new javax.swing.JTextField();
+        executeDqlButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -148,6 +164,13 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        executeDqlButton.setText("Execute DQL");
+        executeDqlButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                executeDqlButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -158,16 +181,15 @@ public class MainWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(debugRouteText)
-                                .addGap(18, 18, 18)
-                                .addComponent(debugRouteButton))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(StatusTextLabel))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(debugServiceText)
-                                .addGap(10, 10, 10)
-                                .addComponent(debugServiceButton)))
+                                .addComponent(debugRouteButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(debugServiceButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(executeDqlButton)
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(60, 60, 60)
                         .addComponent(jButton3))
                     .addGroup(layout.createSequentialGroup()
@@ -188,7 +210,8 @@ public class MainWindow extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(pullBeforeDumping)
                                 .addGap(18, 18, 18)
-                                .addComponent(pushAfterDumping)))
+                                .addComponent(pushAfterDumping))
+                            .addComponent(debugRouteText, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -210,14 +233,13 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(pullBeforeDumping)
                     .addComponent(pushAfterDumping))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(debugRouteButton)
-                    .addComponent(debugRouteText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(debugRouteText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(debugServiceButton)
-                    .addComponent(debugServiceText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                    .addComponent(debugRouteButton)
+                    .addComponent(executeDqlButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(StatusTextLabel)
                     .addComponent(jButton3))
@@ -281,7 +303,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void debugServiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_debugServiceButtonActionPerformed
         // TODO add your handling code here:
         String command = "php app/console container:debug ";
-        String route = this.debugServiceText.getText();
+        String route = this.debugRouteText.getText();
         final String exCommand =  command+route;
         new Thread(new Runnable() {
             @Override
@@ -291,6 +313,19 @@ public class MainWindow extends javax.swing.JFrame {
         }).start();
     }//GEN-LAST:event_debugServiceButtonActionPerformed
 
+    private void executeDqlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeDqlButtonActionPerformed
+        String command = "php app/console doctrine:query:dql ";
+        String route = this.debugRouteText.getText();
+        final String exCommand =  command+"'"+route+"'";
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MainWindow.commands.executeCommand(exCommand);
+            }
+        }).start();
+    }//GEN-LAST:event_executeDqlButtonActionPerformed
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -328,13 +363,15 @@ public class MainWindow extends javax.swing.JFrame {
         });
     }
     private static Commands commands;
+    private static SystemTray systemTray;
+    public static TrayIcon trayIcon;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JCheckBox DevCacheCheckbox;
     private javax.swing.JLabel StatusTextLabel;
     private javax.swing.JButton debugRouteButton;
     private javax.swing.JTextField debugRouteText;
     private javax.swing.JButton debugServiceButton;
-    private javax.swing.JTextField debugServiceText;
+    private javax.swing.JButton executeDqlButton;
     private static javax.swing.JButton jButton1;
     private static javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;

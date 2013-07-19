@@ -4,10 +4,12 @@
  */
 package symfonydevelopergui;
 
+import java.awt.TrayIcon;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +52,7 @@ public class Commands {
         }
         this.executeCommand("php app/console assetic:dump");
         if (ftpPush) {
+            MainWindow.trayIcon.displayMessage("Command Finished", "Confirm Upload" , TrayIcon.MessageType.WARNING);
             int confirm = JOptionPane.showConfirmDialog(null, "Do you confirm upload");
             if (JOptionPane.YES_OPTION == confirm) {
                 this.executeCommand("git ftp push --verbose");
@@ -60,19 +63,49 @@ public class Commands {
     public void executeCommand(String command) {
         Process p;
         this.statusLabel.setText("Executing " + command);
+        int c=0;
         try {
             String a[] = null;
             p = Runtime.getRuntime().exec(command, a, new File(Commands.applicationPath));
-            BufferedInputStream bis = new BufferedInputStream(p.getInputStream());
+            InputStream is = p.getInputStream();
+            
+            BufferedInputStream bis = new BufferedInputStream(is);
             BufferedReader br = new BufferedReader(new InputStreamReader(bis));
             String line;
             while ((line = br.readLine()) != null) {
+                c++;
                 this.outPutTextPane.setText(this.outPutTextPane.getText() + "\n" + line);
+                if(c%123==0){
+                    this.outPutTextPane.setText("");
+                    c=0;
+                }
             }
-            Logger.getLogger(Commands.class.getName()).log(Level.INFO, "Done executing the command", "");
+            try {
+                p.waitFor();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Commands.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(p.exitValue()!=0){
+                MainWindow.trayIcon.displayMessage("Man! Thats an error", command+" gave an errror. Check o/p pane" , TrayIcon.MessageType.WARNING);
+                is = p.getErrorStream();
+            }else{
+                Logger.getLogger(Commands.class.getName()).log(Level.INFO, "Done executing the command", "");
+            }
+            bis = new BufferedInputStream(is);
+            br = new BufferedReader(new InputStreamReader(bis));
+            while ((line = br.readLine()) != null) {
+                c++;
+                this.outPutTextPane.setText(this.outPutTextPane.getText() + "\n" + line);
+                if(c%123==0){
+                    this.outPutTextPane.setText("");
+                    c=0;
+                }
+            }
+            
         } catch (IOException ex) {
             Logger.getLogger(Commands.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.statusLabel.setText("Done Executing " + command);
+        MainWindow.trayIcon.displayMessage("Command Finished", command , TrayIcon.MessageType.INFO);
     }
 }
